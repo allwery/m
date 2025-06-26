@@ -1,10 +1,12 @@
+# app/__init__.py
+
 import os
 from flask import Flask, send_from_directory
-from .config import Config
+from .config    import Config
 from .extension import db, migrate, jwt, cors, mail
 
 def create_app():
-    # Создаём приложение и настраиваем статику фронтенда
+    # создаём Flask-приложение, указываем папку со сборкой фронтенда
     app = Flask(
         __name__,
         static_folder=os.path.join(os.pardir, 'frontend', 'dist'),
@@ -12,18 +14,14 @@ def create_app():
     )
     app.config.from_object(Config)
 
-    # Инициализация расширений
+    # инициализация расширений
     cors.init_app(app)
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
     mail.init_app(app)
 
-    # ← Здесь автоматически создаём все таблицы, если их ещё нет
-    with app.app_context():
-        db.create_all()
-
-    # Регистрация API-модулей
+    # регистрация API-блюпринтов
     from app.api.auth_api     import auth_api
     from app.api.category_api import category_api
     from app.api.product_api  import product_api
@@ -42,7 +40,7 @@ def create_app():
     app.register_blueprint(user_api,     url_prefix='/api/user')
     app.register_blueprint(admin_api,    url_prefix='/api/admin')
 
-    # Отдача фронтенда
+    # отдаём фронтенд (SPA)
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')
     def serve_frontend(path):
@@ -51,7 +49,7 @@ def create_app():
             return send_from_directory(app.static_folder, path)
         return send_from_directory(app.static_folder, 'index.html')
 
-    # Отдача медиа-файлов
+    # отдаём медиа-файлы
     @app.route(f"{app.config['MEDIA_URL']}/<path:filename>")
     def serve_media(filename):
         media_root = os.path.join(app.root_path, app.config['MEDIA_ROOT'])
@@ -60,7 +58,8 @@ def create_app():
     @app.route('/media/products/<path:filename>')
     def serve_product_images(filename):
         media_dir = os.path.abspath(
-            os.path.join(app.root_path, os.pardir, 'media', 'img', 'products'))
+            os.path.join(app.root_path, os.pardir, 'media', 'img', 'products')
+        )
         return send_from_directory(media_dir, filename)
 
     return app
