@@ -107,7 +107,7 @@ def update_review(review_id):
     review = Review.query.get_or_404(review_id)
 
     if review.user_id != user_id and not user.is_admin:
-        return jsonify({'errors': ['Unauthorized']}), 403
+        return jsonify({'errors': ['Не авторизован']}), 403
 
     data = request.get_json() or {}
     errors = validate_review_params(data)
@@ -133,7 +133,7 @@ def delete_review(review_id):
     review = Review.query.get_or_404(review_id)
 
     if review.user_id != user_id and not user.is_admin:
-        return jsonify({'errors': ['Unauthorized']}), 403
+        return jsonify({'errors': ['Не авторизован']}), 403
 
     db.session.delete(review)
     db.session.commit()
