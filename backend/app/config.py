@@ -1,56 +1,52 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # Загружаем .env
+# подгрузим .env (локально)
+load_dotenv()
 
 class Config:
-    # Основные
-    SECRET_KEY = os.getenv('SECRET_KEY', 'fallback-flask-secret-key')
+    # === Flask ===
+    SECRET_KEY = os.getenv(
+        'SECRET_KEY',
+        'f4a1c3e87b2d5f0c6a9e8d1234567890abcdef1234567890abcdef1234567890'
+    )
 
-    # База данных
+    # === SQLAlchemy / Postgres ===
     SQLALCHEMY_DATABASE_URI = os.getenv(
         'DATABASE_URL',
-        'postgresql://user:password@localhost/clothing_store'
+        'postgresql://vadimb:7wBsVahU7rvQk7v8aWSlixeJsj4rworW'
+        '@dpg-d1egsvje5dus73bdok6g-a:5432/moroznik_store'
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # Режим разработки
-    DEBUG = os.getenv('FLASK_ENV') == 'development'
-
-    # CORS
-    CORS_ORIGINS = os.getenv('CORS_ORIGINS', '*').split(',')
-
-    # Почта
+    # === Почта ===
     MAIL_SERVER = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
     MAIL_PORT = int(os.getenv('MAIL_PORT', 587))
     MAIL_USE_TLS = True
-    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
-    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME', 'your-email@gmail.com')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD', 'your-app-specific-password')
     MAIL_DEFAULT_SENDER = os.getenv(
         'MAIL_DEFAULT_SENDER',
-        MAIL_USERNAME or 'no-reply@artboutique.com'
+        MAIL_USERNAME or 'no-reply@your-domain.com'
     )
 
-    # JWT
+    # === JWT ===
     JWT_SECRET_KEY = os.getenv(
         'JWT_SECRET_KEY',
-        'fallback-jwt-secret-key-should-be-long-and-random'
+        'f4a1c3e87b2t5f0c6a9e8d3219967890abcdef1234567890bagtlq2178537790'
     )
 
-    # Пути для медиа-файлов
-    # Медиа-корень (для отдачи статических файлов через Flask)
-    MEDIA_ROOT = os.getenv(
-        'MEDIA_ROOT',
-        os.path.join(os.pardir, 'media')
-    )
-    # URL-префикс для доступа к медиа через браузер
-    MEDIA_URL = os.getenv('MEDIA_URL', '/media')
+    # === CORS ===
+    # при необходимости ограничьте домены через ENV
+    CORS_ORIGINS = os.getenv('CORS_ORIGINS', '*').split(',')
 
-    # Папка для загрузки product-image через API
+    # === Пути для медиа-файлов / загрузок ===
+    MEDIA_ROOT = os.getenv('MEDIA_ROOT', os.path.join(os.pardir, 'media'))
+    MEDIA_URL  = os.getenv('MEDIA_URL', '/media')
     UPLOAD_FOLDER = os.getenv(
         'UPLOAD_FOLDER',
         os.path.join(MEDIA_ROOT, 'products')
     )
 
-    # Защита форм
-    WTF_CSRF_ENABLED = True
+    # === Прочее ===
+    DEBUG = os.getenv('FLASK_ENV') == 'development'
