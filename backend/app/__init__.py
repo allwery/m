@@ -2,7 +2,6 @@ import os
 from flask import Flask, send_from_directory
 from .config import Config
 from .extension import db, migrate, jwt, cors, mail
-from flask import send_from_directory
 
 def create_app():
     # Создаём приложение и настраиваем статику фронтенда
@@ -19,6 +18,10 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
     mail.init_app(app)
+
+    # ← Здесь автоматически создаём все таблицы, если их ещё нет
+    with app.app_context():
+        db.create_all()
 
     # Регистрация API-модулей
     from app.api.auth_api     import auth_api
@@ -48,7 +51,7 @@ def create_app():
             return send_from_directory(app.static_folder, path)
         return send_from_directory(app.static_folder, 'index.html')
 
-    # Отдача медиа-файлов из папки MEDIA_ROOT по URL MEDIA_URL
+    # Отдача медиа-файлов
     @app.route(f"{app.config['MEDIA_URL']}/<path:filename>")
     def serve_media(filename):
         media_root = os.path.join(app.root_path, app.config['MEDIA_ROOT'])
@@ -56,8 +59,6 @@ def create_app():
 
     @app.route('/media/products/<path:filename>')
     def serve_product_images(filename):
-    # Абсолютный путь к папке <project_root>/media/img/products
-    # app.root_path → backend/app, so one level up to backend, then ../media/img/products
         media_dir = os.path.abspath(
             os.path.join(app.root_path, os.pardir, 'media', 'img', 'products'))
         return send_from_directory(media_dir, filename)
