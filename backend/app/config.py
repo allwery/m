@@ -14,8 +14,7 @@ class Config:
     # === SQLAlchemy / Postgres ===
     SQLALCHEMY_DATABASE_URI = os.getenv(
         'DATABASE_URL',
-        'postgresql://vadimb:7wBsVahU7rvQk7v8aWSlixeJsj4rworW'
-        '@dpg-d1egsvje5dus73bdok6g-a:5432/moroznik_store'
+        'postgresql://vadimb:7wBsVahU7rvQk7v8aWSlixeJsj4rworW@dpg-d1egsvje5dus73bdok6g-a/moroznik_store' 
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
