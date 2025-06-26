@@ -12,7 +12,7 @@
       <!-- Центральная колонка: иконки соцсетей -->
       <div class="footer-center">
         <a
-          href="https://t.me/yourchannel"
+          href="https://t.me/Moroznik_bot"
           class="social-icon"
           target="_blank"
           rel="noopener"
